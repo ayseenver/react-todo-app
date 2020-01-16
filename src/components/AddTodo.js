@@ -1,46 +1,35 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types'
+import React, { useState } from "react";
+import { useStoreActions } from "easy-peasy";
 
-class AddTodo extends Component {
-  state = {
-    title: ''
-  }
+const AddTodo = () => {
+  const [title, setTitle] = useState("");
 
-  onChange = (e) => {
-    this.setState({ [e.target.name]: e.target.value });
-  }
+  const add = useStoreActions(actions => actions.add);
 
-  onSubmit = (e) => {
-    e.preventDefault();
-    this.props.addTodo(this.state.title);
-    this.setState({ title: '' })
-  }
-
-  render() {
-    return (
-      <form onSubmit={this.onSubmit} style={{ display: 'flex' }}>
+  return (
+    <div>
+      <form
+        onSubmit={e => {
+          e.preventDefault();
+          add({
+            title,
+            completed: false
+          });
+        }}
+      style={{ display: 'flex' }} >
         <input
           type="text"
           name="title"
           style={{ flex: '10', padding: '5px' }}
-          placeholder="Add Todo"
-          value={this.state.title}
-          onChange={this.onChange}
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+          placeholder="Add todo title..."
         />
-        <input
-          type="submit"
-          value="Submit"
-          className="btn"
-          style={{flex: '1' }}
-        />
+        <input type="submit" value="Add Todo" />
       </form>
-    )
-  }
-}
+    </div>
+  );
+};
 
-// PropTypes
-AddTodo.propTypes = {
-  addTodo: PropTypes.func.isRequired
-}
 
 export default AddTodo;

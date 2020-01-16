@@ -1,21 +1,23 @@
-import React, { Component } from 'react';
+import React, { Fragment, useEffect } from "react";
 import TodoItem from './TodoItem';
-import PropTypes from 'prop-types';
+import { useStoreState, useStoreActions } from "easy-peasy";
 
-class Todos extends Component {
-  render() {
-    return this.props.todos.map((todo) => (
-      <TodoItem key={todo.id} todo={todo} markComplete={this.props.markComplete}
-        delTodo={this.props.delTodo}/>
-    ));
-  }
-}
+const Todos = () => {
+  const todos = useStoreState(state => state.todos);
+  const fetchTodos = useStoreActions(actions => actions.fetchTodos);
 
-// PropTypes
-Todos.propTypes = {
-  todos: PropTypes.array.isRequired,
-  markComplete: PropTypes.func.isRequired,
-  delTodo: PropTypes.func.isRequired 
-}
+  useEffect(() => {
+    fetchTodos();
+    // eslint-disable-next-line
+  }, []);
+
+  return (
+    <Fragment>
+    {todos.map((todo) => (
+      <TodoItem key={todo.id} todo={todo} />
+    ))}
+    </Fragment>
+  );
+};
 
 export default Todos;
